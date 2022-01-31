@@ -23,9 +23,10 @@ export class PigesAuthCallbackComponent implements OnInit {
 	}
 
 	async load() {
+		// TODO gestire autenticazione con codice e non solo quella implicita
 		let fragmentMap: any = { };
 		if(this.activatedRoute.snapshot.fragment === null) {
-			throw 'no parameters passed';
+			throw 'no_parameters_passed';
 		}
 		this.activatedRoute.snapshot.fragment.split("&").forEach((fragment: string) => {
 			let fragmentVals = fragment.split("=");
