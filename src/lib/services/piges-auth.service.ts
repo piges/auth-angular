@@ -81,7 +81,7 @@ export class PigesAuthService {
 						headers: new HttpHeaders().set('Authorization', 'Bearer ' + token.access_token),
 					}).toPromise();	
 				} catch (e) {
-					console.log("expired_token:", e);
+					console.log("expired_token", e);
 					throw 'expired_token';
 				}
 				

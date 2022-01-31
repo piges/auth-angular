@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 
 import { PigesAuthService } from './services/piges-auth.service';
 import { PigesAuthGuard } from './services/piges-auth-guard.service';
@@ -12,7 +13,8 @@ import { PigesAuthLoginComponent } from './components/piges-auth-login.component
 	imports: [
 		CommonModule,
 		HttpClientModule,
-		
+		NgxWebstorageModule.forRoot(),
+
 	],
 	providers: [
 		PigesAuthService,
