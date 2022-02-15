@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { LocalStorageService } from 'ngx-webstorage';
-import { LocalStorage } from '@ngx-pwa/local-storage';
-
 
 import { STORAGE_KEY } from '../piges-auth.export';
 import { PigesAuthService } from '../services/piges-auth.service';
@@ -38,9 +36,7 @@ export class PigesAuthCallbackComponent implements OnInit {
 		this.localStorage.store(STORAGE_KEY, fragmentMap);
 				
 		// todo navigate to back url
-		// forse sarebbe meglio mettere redirect javascript e non route
-		//this.router.navigateByUrl('/');
-		window.location.replace("/");
+		this.router.navigateByUrl("/");
 	}
 	
 }
