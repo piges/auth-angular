@@ -1,16 +1,15 @@
 {
   "name": "@piges/auth-angular",
-  "version": "0.0.17",
+  "version": "0.0.30",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/piges/auth-angular.git"
   },
   "peerDependencies": {
     "@angular/common": "8.2.14",
-    "@angular/core": "8.2.14",
-    "ngx-webstorage": "3.0.2"
+    "@angular/core": "8.2.14"
   },
-  "devDependencies": {
-    "ngx-webstorage": "3.0.2"
+  "dependencies": {
+    "ngx-webstorage": "8.0.0"
   }
 }

@@ -5,6 +5,7 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { Observable, Subject } from 'rxjs';
 
 import { PIGES_CONFIG, STORAGE_KEY } from '../piges-auth.export';
+import { IPigesConfig } from '../interface/piges-config';
 
 @Injectable()
 export class PigesAuthService {
@@ -12,15 +13,21 @@ export class PigesAuthService {
 
 	$authenticationState: Observable<boolean>;
 
-	pigesConfig: any;
+	pigesConfig: IPigesConfig;
 
 	constructor(
 		private localStorage: LocalStorageService,
 		private http: HttpClient,
-		@Inject(PIGES_CONFIG) pigesConfig: any,
+		@Inject(PIGES_CONFIG) pigesConfig: IPigesConfig,
 		@Inject(PLATFORM_ID) private platformId: Object,
 		@Optional() @Inject('httpResponseData') private httpResponseData: any
 	) {
+		if(pigesConfig._authorizeUrl === undefined) {
+			pigesConfig._authorizeUrl = 'https://account.piges.io';
+		}
+		if(pigesConfig._serverUrl === undefined) {
+			pigesConfig._serverUrl = 'https://auth.piges.io';
+		}
 		this.pigesConfig = pigesConfig;
 		this.$authenticationState = this.authenticationState.asObservable();
 	}
@@ -32,7 +39,20 @@ export class PigesAuthService {
 	private _userInfo: any;
 
 	getAuthorizationUrl(idpIdentifier: string = this.pigesConfig.idp_identifier, state: string = "") {
-		return `${this.pigesConfig.authorizeUrl}/authorize?response_type=token&client_id=${this.pigesConfig.clientId}&redirect_uri=${this.pigesConfig.redirectUrl}&idp_identifier=${idpIdentifier}&state=${state}`;
+		let authorizationUrl = `${this.pigesConfig._authorizeUrl}/authorize?`;
+		authorizationUrl += `&response_type=token`;
+		authorizationUrl += `&client_id=${this.pigesConfig.clientId}`;
+		authorizationUrl += `&redirect_uri=${this.pigesConfig.redirectUrl}`;
+
+		if(idpIdentifier !== undefined && idpIdentifier !== "") {
+			authorizationUrl += `&idp_identifier=${idpIdentifier}`;
+		}
+
+		if(state !== undefined && state !== "") {
+			authorizationUrl += `&state=${state}`;
+		}
+		
+		return authorizationUrl;
 	}
 
 	async isAuthenticated(): Promise<boolean> {
@@ -79,11 +99,11 @@ export class PigesAuthService {
 				}
 
 				try {
-					this._userInfo = await this.http.get(this.pigesConfig.serverUrl + "/oauth2/userInfo", {
+					this._userInfo = await this.http.get(this.pigesConfig._serverUrl + "/oauth2/userInfo", {
 						headers: new HttpHeaders().set('Authorization', 'Bearer ' + token.access_token),
 					}).toPromise();
 				} catch (e) {
-					console.log("expired_token", e);
+					console.log("Piges Auth log:", "Expired token!");
 					throw 'expired_token';
 				}
 
@@ -115,7 +135,7 @@ export class PigesAuthService {
 		this._tokenInMemory = undefined;
 		this._userInfo = undefined;
 
-		let url = `${this.pigesConfig.serverUrl}/logout?client_id=${this.pigesConfig.clientId}&logout_uri=${uri}`;
+		let url = `${this.pigesConfig._serverUrl}/logout?client_id=${this.pigesConfig.clientId}&logout_uri=${uri}`;
 		this.redirect(url);
 	}
 
@@ -127,6 +147,7 @@ export class PigesAuthService {
 		if (this.platformId == "browser") {
 			window.location.href = url;
 		} else {
+			console.log(this.platformId);
 			this.httpResponseData.redirectUrl = url;
 		}
 	}

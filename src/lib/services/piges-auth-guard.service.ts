@@ -10,16 +10,19 @@ export class PigesAuthGuard implements CanActivate {
 	) { }
     
     async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
+		let login = false;
 		try {
-			let userInfo = this.pigesAuthService.getUser();
-			if(userInfo !== null) {
-				return true;
+			let userInfo = await this.pigesAuthService.getUser();
+			if(userInfo != null) {
+				login = true;
 			}
 		} catch (error) {
-			
+			console.log("Piges Auth log:", "Not logged user!");
 		} finally {
-			this.pigesAuthService.loginRedirect();
-			return false;
+			if(!login) {
+				this.pigesAuthService.loginRedirect();
+			}
+			return login;
 		}
 	}
 }

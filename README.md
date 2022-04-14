@@ -1,24 +1,118 @@
 # PigesAngularAuth
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.5.
+Library for use security funcionality of piges PaaS in angular
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name --project piges-auth` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project piges-auth`.
-> Note: Don't forget to add `--project piges-auth` or else it will be added to the default project in your `angular.json` file. 
+``` bash
+npm i @piges/auth-angular
+```
 
-## Build
+## Usage
 
-Run `ng build piges-auth` to build the project. The build artifacts will be stored in the `dist/` directory.
+Import and configure module
 
-## Publishing
+``` typescript
+// myApp.module.ts
 
-After building your library with `ng build piges-auth`, go to the dist folder `cd dist/piges-auth` and run `npm publish`.
+import { PigesAuthModule, PIGES_CONFIG } from '@piges/auth-angular';
 
-## Running unit tests
+const pigesConfig = {
+	clientId: '-----------------------',
+	redirectUrl: 'https://your-app-url.tld/piges/auth/callback',
+	//idp_identifier: '',
+	//clientSecret: '',
+}
 
-Run `ng test piges-auth` to execute the unit tests via [Karma](https://karma-runner.github.io).
+@NgModule({
+  imports: [
+    ...
+    PigesAuthModule
+  ],
+  providers: [
+    { 
+      provide: PIGES_CONFIG, 
+      useValue: { pigesConfig } 
+    }
+  ],
+})
+export class MyAppModule { }
 
-## Further help
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Use PigesAuthGuard for protect your route
+
+``` typescript
+// myApp.route.ts
+
+import { PigesAuthGuard } from '@piges/auth-angular';
+
+const routes: Routes = [
+	{
+		path: 'secure-page',
+		canActivate : [
+			PigesAuthGuard
+		],
+		component: SecureComponent,
+	},
+	...
+];
+
+```
+
+Manage the login redirect and login callback with route
+
+``` typescript
+// myApp.route.ts
+
+import { PigesAuthLoginComponent, PigesAuthCallbackComponent } from '@piges/auth-angular';
+
+const routes: Routes = [
+	{
+		path: 'piges/auth',
+		children: [
+			{
+				path: 'login',
+				component: PigesAuthLoginComponent,
+			},
+			{
+				path: 'callback',
+				component: PigesAuthCallbackComponent
+			},
+		]
+	},
+	...
+];
+
+```
+
+
+Get user info in your component
+
+``` typescript
+// my.component.ts
+
+import { PigesAuthService } from '@piges/auth-angular';
+
+export class MyComponent {
+	constructor(
+		private pigesAuthService: PigesAuthService,
+	) {}
+
+	userInfo: any;
+
+	ngOnInit(): void {
+		this.loadUser();
+	}
+
+	async loadUser() {
+		this.userInfo = await this.pigesAuthService.getUser();
+	}
+
+}
+
+```
+
+## License
+
+[MIT](LICENSE)
