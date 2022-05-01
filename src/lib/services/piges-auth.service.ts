@@ -67,6 +67,10 @@ export class PigesAuthService {
 		return false;
 	}
 
+	getLogoutUrl(): string {
+		return this.pigesConfig.redirectUrl;
+	}
+
 
 	private async getToken(): Promise<any> {
 		if (this._tokenReading) {

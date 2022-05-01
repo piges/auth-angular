@@ -15,7 +15,7 @@ Import and configure module
 ``` typescript
 // myApp.module.ts
 
-import { PigesAuthModule, PIGES_CONFIG } from '@piges/auth-angular';
+import { PigesAuthModule, PIGES_CONFIG, IPigesConfig } from '@piges/auth-angular';
 
 const pigesConfig = {
 	clientId: '-----------------------',
@@ -99,7 +99,7 @@ export class MyComponent {
 		private pigesAuthService: PigesAuthService,
 	) {}
 
-	userInfo: any;
+	userInfo: any = {};
 
 	ngOnInit(): void {
 		this.loadUser();

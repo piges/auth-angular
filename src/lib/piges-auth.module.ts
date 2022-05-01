@@ -8,6 +8,7 @@ import { PigesAuthGuard } from './services/piges-auth-guard.service';
 
 import { PigesAuthCallbackComponent } from './components/piges-auth-callback.component';
 import { PigesAuthLoginComponent } from './components/piges-auth-login.component';
+import { PigesAuthLogoutComponent } from './components/piges-auth-logout.component';
 
 @NgModule({
 	imports: [
@@ -24,11 +25,13 @@ import { PigesAuthLoginComponent } from './components/piges-auth-login.component
 	declarations: [
 		PigesAuthCallbackComponent,
 		PigesAuthLoginComponent,
-		
+		PigesAuthLogoutComponent,
+
 	],
 	exports: [
 		PigesAuthCallbackComponent,
 		PigesAuthLoginComponent,
+		PigesAuthLogoutComponent,
 
 	],
 })
